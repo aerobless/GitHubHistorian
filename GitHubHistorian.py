@@ -4,8 +4,8 @@ from subprocess import call
 
 #Program Settings (feel free to change to your liking):
 username = "aerobless"                #Your GitHub username
-cRep = "GitHubHistorian"              #The commits you want to save before deleting the repo.
-hRep = "HistoricCommitData"           #The repo where your historic commits will go
+cRep = "bcmd"              #The commits you want to save before deleting the repo.
+hRep = "CommitGraveyard"           #The repo where your historic commits will go
 hRepPath = "/Users/theowinter/git/"   #The path to your git folder (where you keep most of your repos)
 
 #Functions:
