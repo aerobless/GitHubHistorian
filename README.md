@@ -15,7 +15,7 @@ GitHubHistorian is a Python 2.X script aimed at UNIX operating systems. But it w
 2. Run the script with `python GitHubHistorian.py` in your favourite shell
 
 
-##The MIT License (MIT)
+##MIT License (MIT)
 
 Copyright (c) 2014 Theo Winter
 
