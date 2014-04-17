@@ -4,16 +4,28 @@ from subprocess import call
 
 #Program Settings (feel free to change to your liking):
 currentRepo = "ToxicTodo"         #The commits you want to save before deleting the repo.
-historicRepo = "GitHubHistorian"  #The repo where your historic commits will go
+historicRepo = "GitHubHistory"  #The repo where your historic commits will go
 username = "aerobless"            #Your GitHub username
 
 #Functions:
 def getJSON( url ):
   request = urllib2.Request(url)
+  print url
   base64string = base64.encodestring('%s:%s' % (username, password)).replace('\n', '')
   #With this authentication we can have 5000 GitHub-API-requests per hour.
   request.add_header("Authorization", "Basic %s" % base64string)
   return json.loads(urllib2.urlopen(request).read())
+
+def createHistoricRepository():
+  #call(["mkdir", historicRepo])
+  #call(["cd", historicRepo])
+  #call(["git", "init"])
+  repoDescription = "Repository containing historic commit-data. Generated with GitHubHistorian." #todo add link
+  repoBuilder = '{"name":"'+historicRepo+'","description":"'+repoDescription+'"}'
+  #getJSON("https://api.github.com/user/repos -d '"+repoBuilder+"'")
+  getJSON("https://api.github.com/user/repos -d '{\"name\":\"test\",\"description\":\"my new repo description\"}'")
+  #curl -u "aerobless"  https://api.github.com/user/repos -d '{"name":"my-new-repo","description":"my new repo description"}'
+  print "done"
 
 #Main Program:
 print ""
@@ -47,3 +59,6 @@ print repo_commits_json["commit"]["author"]["name"]
 
 #Run Shell command
 call(["ls", "-l"])
+
+#Create repo test
+createHistoricRepository()
