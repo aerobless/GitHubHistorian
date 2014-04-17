@@ -4,7 +4,7 @@ from subprocess import call
 
 #Program Settings (feel free to change to your liking):
 username = "aerobless"                #Your GitHub username
-cRep = "GitHubHistorian"                    #The commits you want to save before deleting the repo.
+cRep = "GitHubHistorian"              #The commits you want to save before deleting the repo.
 hRep = "HistoricCommitData"           #The repo where your historic commits will go
 hRepPath = "/Users/theowinter/git/"   #The path to your git folder (where you keep most of your repos)
 
@@ -56,6 +56,8 @@ gitFolderStatus = call(["git","status"])
 if(gitFolderStatus==128):
   print("Initializing the local repository..")
   call(["git","init"])
+  call(["git","remote","add","origin","https://"+username+"@github.com/"+username+"/"+hRep+".git"])
+  call(["git","pull","origin","master"])
   call(["touch","commit.history"])
   call(["git","add","commit.history"])
   historyFile = open('commit.history', 'w')
@@ -85,19 +87,28 @@ while True:
   except IndexError:
     break
 
-#Change a file (so we can actually commit something)
-try:
-  historyFile = open('commit.history', 'r')
-  newNumber = str(int(historyFile.readline())+1)
-  historyFile.close()
-  historyFile = open('commit.history', 'w')
-  historyFile.write(newNumber)
-  historyFile.close()
-except IOError:
-  print("The commit.history file does not exist. Did you delete it? - Creating a new commit.history now.")
-  historyFile = open('commit.history', 'w')
-  historyFile.write("1")
-  historyFile.close()
+#Iterate through list to build commits
+print("Creating historical commits...")
+call(["git","pull","origin","master"])
+for element in commitList:
+  #Change a file (so we can actually commit something)
+  try:
+    historyFile = open('commit.history', 'r')
+    newNumber = str(int(historyFile.readline())+1)
+    historyFile.close()
+    historyFile = open('commit.history', 'w')
+    historyFile.write(newNumber)
+    historyFile.close()
+  except IOError:
+    print("The commit.history file does not exist. Did you delete it? - Creating a new commit.history now.")
+    historyFile = open('commit.history', 'w')
+    historyFile.write("1")
+    historyFile.close()
 
-#Build a commit
-call(["git","commit","--date",currentCommitInfo[2],"-m","'"+currentCommitInfo[3]+"'","--author="+currentCommitInfo[0]+" <"+currentCommitInfo[1]+">"])
+  #Build a commit
+  call(["git","commit","--date",element[2],"-am","'"+element[3]+"'","--author="+element[0]+" <"+element[1]+">"])
+
+#Finally pushing everything to the remote
+print ""
+print "We're all done! Enter your password to confirm that you want to push the historic data to GitHub!"
+call(["git","push","origin","master"])
