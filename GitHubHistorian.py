@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import urllib2, re, json, base64, getpass
+import urllib, urllib2, re, json, base64, getpass, sys
 from subprocess import call
 
 #Program Settings (feel free to change to your liking):
@@ -10,7 +10,6 @@ username = "aerobless"            #Your GitHub username
 #Functions:
 def getJSON( url ):
   request = urllib2.Request(url)
-  print url
   base64string = base64.encodestring('%s:%s' % (username, password)).replace('\n', '')
   #With this authentication we can have 5000 GitHub-API-requests per hour.
   request.add_header("Authorization", "Basic %s" % base64string)
@@ -20,11 +19,6 @@ def createHistoricRepository():
   #call(["mkdir", historicRepo])
   #call(["cd", historicRepo])
   #call(["git", "init"])
-  repoDescription = "Repository containing historic commit-data. Generated with GitHubHistorian." #todo add link
-  repoBuilder = '{"name":"'+historicRepo+'","description":"'+repoDescription+'"}'
-  #getJSON("https://api.github.com/user/repos -d '"+repoBuilder+"'")
-  getJSON("https://api.github.com/user/repos -d '{\"name\":\"test\",\"description\":\"my new repo description\"}'")
-  #curl -u "aerobless"  https://api.github.com/user/repos -d '{"name":"my-new-repo","description":"my new repo description"}'
   print "done"
 
 #Main Program:
@@ -34,10 +28,21 @@ print "----------------------"
 
 useStoredSettings = raw_input("Type 'yes' if you want to enter custom settings:")
 if(useStoredSettings=="yes" or useStoredSettings=="y"):
-  repo = raw_input("Which repository (name):")
+  currentRepo = raw_input("Which repository (name):")
   username = raw_input("Your GitHub username:")
-
 password = getpass.getpass("Your GitHub password: ")
+
+#Check if the HistoricRepo exists
+try:
+  ddd = getJSON('https://api.github.com/repos/'+username+'/'+historicRepo+'/branches')
+except urllib2.HTTPError:
+  print ""
+  print "INFORMATION:"
+  print "GitHubHistorian was unable to detect your historic repository named: "+historicRepo
+  print "Please login to github.com and create a new repository with that name"
+  print "or change the repository name in the settings."
+  print ""
+  sys.exit()
 
 #Get Repo Sha Id
 repo_information_json = getJSON('https://api.github.com/repos/'+username+'/'+currentRepo+'/branches')
