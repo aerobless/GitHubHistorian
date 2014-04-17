@@ -1,23 +1,26 @@
 #!/usr/bin/python
-#Imports:
-import urllib2, re
-import json
-import base64
+import urllib2, re, json, base64
 
 print "";
 print " GitHubHistorian v0.1 "
 print "----------------------"
-
-#Settings
-repo = "ToxicTodo"
-username = "aerobless"
-password = raw_input("Enter your password: ")
 
 def getJSON( url ):
   request = urllib2.Request(url)
   base64string = base64.encodestring('%s:%s' % (username, password)).replace('\n', '')
   request.add_header("Authorization", "Basic %s" % base64string)
   return json.loads(urllib2.urlopen(request).read())
+
+#Settings
+useStoredSettings = raw_input("Type 'yes' if you want to use the stored settings:")
+if(useStoredSettings=="yes" or useStoredSettings=="y"):
+  repo = "ToxicTodo"
+  username = "aerobless"
+  password = "ddd"
+else:
+  repo = raw_input("Which repository (name):")
+  username = raw_input("Your GitHub username:")
+  password = raw_input("Your GitHub password: ")
 
 #Get Repo Sha Id
 repo_information_json = getJSON('https://api.github.com/repos/'+username+'/'+repo+'/branches')
