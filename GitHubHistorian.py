@@ -8,6 +8,7 @@ print "----------------------"
 def getJSON( url ):
   request = urllib2.Request(url)
   base64string = base64.encodestring('%s:%s' % (username, password)).replace('\n', '')
+  #With this authentication we can have 5000 GitHub-API-requests per hour.
   request.add_header("Authorization", "Basic %s" % base64string)
   return json.loads(urllib2.urlopen(request).read())
 
