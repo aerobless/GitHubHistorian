@@ -3,9 +3,10 @@ import urllib, urllib2, re, json, base64, getpass, sys
 from subprocess import call
 
 #Program Settings (feel free to change to your liking):
-currentRepo = "ToxicTodo"         #The commits you want to save before deleting the repo.
-historicRepo = "GitHubHistory"  #The repo where your historic commits will go
-username = "aerobless"            #Your GitHub username
+username = "aerobless"              #Your GitHub username
+currentRepo = "ToxicTodo"           #The commits you want to save before deleting the repo.
+historicRepo = "HistoricCommitData" #The repo where your historic commits will go
+historicRepoLocalPath = "/Users/theowinter/git/"+historicRepo
 
 #Functions:
 def getJSON( url ):
@@ -34,13 +35,13 @@ password = getpass.getpass("Your GitHub password: ")
 
 #Check if the HistoricRepo exists
 try:
-  ddd = getJSON('https://api.github.com/repos/'+username+'/'+historicRepo+'/branches')
+  historicRepoData = getJSON('https://api.github.com/repos/'+username+'/'+historicRepo+'/branches')
 except urllib2.HTTPError:
   print ""
   print "INFORMATION:"
   print "GitHubHistorian was unable to detect your historic repository named: "+historicRepo
-  print "Please login to github.com and create a new repository with that name"
-  print "or change the repository name in the settings."
+  print "Please login to github.com and create a new repository with that name and be sure to initalize it!"
+  print "If you already have a repo with a differnet name, you can change the repository name in the settings."
   print ""
   sys.exit()
 
