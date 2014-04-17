@@ -48,9 +48,16 @@ if not os.path.exists(hRepPath):
   else:
     print("You can change the location of the repo-folder in the settings if you wish. Aborting program.")
     sys.exit()
+else:
+  os.chdir(hRepPath)
 
-
-#call(["cd", "hRepPath"])
+#Check git initialisation
+gitFolderStatus = call(["git","status"])
+if(gitFolderStatus==128):
+  print("Initializing the local repository..")
+  call(["git","init"])
+else:
+  print("The local repository is ready for commits..")
 
 #Get Repo Sha Id
 repo_information_json = getJSON('https://api.github.com/repos/'+username+'/'+cRep+'/branches')
@@ -69,6 +76,3 @@ for k, v in repo_commits_json.iteritems():
 print list
 
 print repo_commits_json["commit"]["author"]["name"]
-
-#Run Shell command
-call(["ls", "-l"])
