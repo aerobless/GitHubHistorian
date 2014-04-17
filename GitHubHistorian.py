@@ -16,12 +16,6 @@ def getJSON( url ):
   request.add_header("Authorization", "Basic %s" % base64string)
   return json.loads(urllib2.urlopen(request).read())
 
-def createHistoricRepository():
-  #call(["mkdir", historicRepo])
-  #call(["cd", historicRepo])
-  #call(["git", "init"])
-  print "done"
-
 #Main Program:
 print ""
 print " GitHubHistorian v0.1 "
@@ -46,9 +40,16 @@ except urllib2.HTTPError:
   sys.exit()
 
 #Go to local Repo
-if os.path.isdir(historicRepoLocalPath):
-  raw_input("Your local repo-folder at '"+historicRepoLocalPath+"' doesn't exist, would you like to create it? (yes to continue)"
-call(["cd",historicRepoLocalPath])
+if not os.path.exists(historicRepoLocalPath):
+  createFolder = raw_input("Your local repo-folder at '"+historicRepoLocalPath+"' doesn't exist, would you like to create it? yes/no")
+  if(createFolder == "yes" or createFolder == "y"):
+    os.makedirs(historicRepoLocalPath)
+  else:
+    print("You can change the location of the repo-folder in the settings if you wish. Aborting program.")
+    sys.exit()
+
+
+#call(["cd", "historicRepoLocalPath"])
 
 #Get Repo Sha Id
 repo_information_json = getJSON('https://api.github.com/repos/'+username+'/'+currentRepo+'/branches')
