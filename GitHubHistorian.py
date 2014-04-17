@@ -56,23 +56,40 @@ gitFolderStatus = call(["git","status"])
 if(gitFolderStatus==128):
   print("Initializing the local repository..")
   call(["git","init"])
+  call(["touch","commit.history"])
+  call(["git","add","commit.history"])
+  historyFile = open('commit.history', 'w')
+  historyFile.write("1")
+  historyFile.close()
 else:
   print("The local repository is ready for commits..")
 
-#Get Repo Sha Id
+#Get the SHA-ID of the latest commit !! TODO: WHAT HAPPENS WHEN WE HAVE MORE THEN ONE BRANCH !!
 repo_information_json = getJSON('https://api.github.com/repos/'+username+'/'+cRep+'/branches')
-repo_sha = repo_information_json[0]['commit']['sha']
+lastCommitSHA = repo_information_json[0]['commit']['sha']
 
-print "Your SHA-ID: "+repo_sha
+#We get the latest commit and re-commit it to our history repo
+currentCommit = getJSON('https://api.github.com/repos/'+username+'/'+cRep+'/commits/'+lastCommitSHA)
 
-#We get one commit, re-commit it in our history repo
-#and then get the next commit based on it's parent-sha
-repo_commits_json = getJSON('https://api.github.com/repos/'+username+'/'+cRep+'/commits/'+repo_sha)
+#Current Commit Data (what we need to setup the commit in the history repo)
+author_name   = currentCommit["commit"]["author"]["name"]
+author_email  = currentCommit["commit"]["author"]["email"]
+author_date   = currentCommit["commit"]["author"]["date"]
+message       = currentCommit["commit"]["message"]
 
-list = []
-for k, v in repo_commits_json.iteritems():
-  if v > 6:
-    list.append(k)
-print list
+#Change a file (so we can actually commit something)
+try:
+  historyFile = open('commit.history', 'r')
+  newNumber = str(int(historyFile.readline())+1)
+  historyFile.close()
+  historyFile = open('commit.history', 'w')
+  historyFile.write(newNumber)
+  historyFile.close()
+except IOError:
+  print("The commit.history file does not exist. Did you delete it? - Creating a new commit.history now.")
+  historyFile = open('commit.history', 'w')
+  historyFile.write("1")
+  historyFile.close()
 
-print repo_commits_json["commit"]["author"]["name"]
+#Build a commit
+#call(["git"])
