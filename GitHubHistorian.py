@@ -76,6 +76,7 @@ author_name   = currentCommit["commit"]["author"]["name"]
 author_email  = currentCommit["commit"]["author"]["email"]
 author_date   = currentCommit["commit"]["author"]["date"]
 message       = currentCommit["commit"]["message"]
+nextSHA       = currentCommit["parents"][0]["sha"]
 
 #Change a file (so we can actually commit something)
 try:
@@ -92,4 +93,4 @@ except IOError:
   historyFile.close()
 
 #Build a commit
-#call(["git"])
+call(["git","commit","--date",author_date,"-m","'"+message+"'","--author="+author_name+" <"+author_email+">"])
