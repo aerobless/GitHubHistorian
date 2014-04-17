@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import urllib, urllib2, re, json, base64, getpass, sys
+import urllib, urllib2, re, json, base64, getpass, sys, os
 from subprocess import call
 
 #Program Settings (feel free to change to your liking):
@@ -45,6 +45,11 @@ except urllib2.HTTPError:
   print ""
   sys.exit()
 
+#Go to local Repo
+if os.path.isdir(historicRepoLocalPath):
+  raw_input("Your local repo-folder at '"+historicRepoLocalPath+"' doesn't exist, would you like to create it? (yes to continue)"
+call(["cd",historicRepoLocalPath])
+
 #Get Repo Sha Id
 repo_information_json = getJSON('https://api.github.com/repos/'+username+'/'+currentRepo+'/branches')
 repo_sha = repo_information_json[0]['commit']['sha']
@@ -65,6 +70,3 @@ print repo_commits_json["commit"]["author"]["name"]
 
 #Run Shell command
 call(["ls", "-l"])
-
-#Create repo test
-createHistoricRepository()
