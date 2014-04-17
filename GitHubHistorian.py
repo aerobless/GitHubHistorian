@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import urllib2, re, json, base64
+import urllib2, re, json, base64, getpass
 
 print "";
 print " GitHubHistorian v0.1 "
@@ -17,11 +17,11 @@ useStoredSettings = raw_input("Type 'yes' if you want to use the stored settings
 if(useStoredSettings=="yes" or useStoredSettings=="y"):
   repo = "ToxicTodo"
   username = "aerobless"
-  password = "ddd"
 else:
   repo = raw_input("Which repository (name):")
   username = raw_input("Your GitHub username:")
-  password = raw_input("Your GitHub password: ")
+
+password = getpass.getpass("Your GitHub password: ")
 
 #Get Repo Sha Id
 repo_information_json = getJSON('https://api.github.com/repos/'+username+'/'+repo+'/branches')
