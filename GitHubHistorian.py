@@ -79,10 +79,9 @@ while True:
   currentCommitInfo.append(currentCommit["commit"]["author"]["email"])
   currentCommitInfo.append(currentCommit["commit"]["author"]["date"])
   currentCommitInfo.append(currentCommit["commit"]["message"])
-  currentCommitInfo.append(currentCommit["parents"][0]["sha"])
   commitList.append(currentCommitInfo)
   try:
-    commitSHA=currentCommitInfo[4]
+    commitSHA=currentCommit["parents"][0]["sha"]
   except IndexError:
     break
 
