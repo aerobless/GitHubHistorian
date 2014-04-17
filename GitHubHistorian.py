@@ -4,7 +4,7 @@ from subprocess import call
 
 #Program Settings (feel free to change to your liking):
 username = "aerobless"                #Your GitHub username
-cRep = "ToxicTodo"                    #The commits you want to save before deleting the repo.
+cRep = "GitHubHistorian"                    #The commits you want to save before deleting the repo.
 hRep = "HistoricCommitData"           #The repo where your historic commits will go
 hRepPath = "/Users/theowinter/git/"   #The path to your git folder (where you keep most of your repos)
 
@@ -66,17 +66,25 @@ else:
 
 #Get the SHA-ID of the latest commit !! TODO: WHAT HAPPENS WHEN WE HAVE MORE THEN ONE BRANCH !!
 repo_information_json = getJSON('https://api.github.com/repos/'+username+'/'+cRep+'/branches')
-lastCommitSHA = repo_information_json[0]['commit']['sha']
+commitSHA = repo_information_json[0]['commit']['sha']
 
-#We get the latest commit and re-commit it to our history repo
-currentCommit = getJSON('https://api.github.com/repos/'+username+'/'+cRep+'/commits/'+lastCommitSHA)
-
-#Current Commit Data (what we need to setup the commit in the history repo)
-author_name   = currentCommit["commit"]["author"]["name"]
-author_email  = currentCommit["commit"]["author"]["email"]
-author_date   = currentCommit["commit"]["author"]["date"]
-message       = currentCommit["commit"]["message"]
-nextSHA       = currentCommit["parents"][0]["sha"]
+#Download all the commit information into a list
+commitList = []
+print "Downloading commit-data from GitHub (this may take a while)"
+while True:
+  currentCommit = getJSON('https://api.github.com/repos/'+username+'/'+cRep+'/commits/'+commitSHA)
+  print "Working on commit: "+str(len(commitList))
+  currentCommitInfo = []
+  currentCommitInfo.append(currentCommit["commit"]["author"]["name"])
+  currentCommitInfo.append(currentCommit["commit"]["author"]["email"])
+  currentCommitInfo.append(currentCommit["commit"]["author"]["date"])
+  currentCommitInfo.append(currentCommit["commit"]["message"])
+  currentCommitInfo.append(currentCommit["parents"][0]["sha"])
+  commitList.append(currentCommitInfo)
+  try:
+    commitSHA=currentCommitInfo[4]
+  except IndexError:
+    break
 
 #Change a file (so we can actually commit something)
 try:
@@ -93,4 +101,4 @@ except IOError:
   historyFile.close()
 
 #Build a commit
-call(["git","commit","--date",author_date,"-m","'"+message+"'","--author="+author_name+" <"+author_email+">"])
+call(["git","commit","--date",currentCommitInfo[2],"-m","'"+currentCommitInfo[3]+"'","--author="+currentCommitInfo[0]+" <"+currentCommitInfo[1]+">"])
