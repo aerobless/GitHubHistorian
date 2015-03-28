@@ -3,9 +3,6 @@ import urllib, urllib2, re, json, base64, getpass, sys, os
 from subprocess import call
 
 #Program Settings (feel free to change to your liking):
-username = "aerobless"                #Your GitHub username
-cRep = "bcmd"              #The commits you want to save before deleting the repo.
-hRep = "CommitGraveyard"           #The repo where your historic commits will go
 hRepPath = "/Users/theowinter/git/"   #The path to your git folder (where you keep most of your repos)
 
 #Functions:
@@ -18,15 +15,15 @@ def getJSON( url ):
 
 #Main Program:
 print ""
-print " GitHub Historian v0.2 "
+print " GitHub Historian v0.3 "
 print "-----------------------"
-hRepPath = hRepPath+hRep #Appending the repoName
 
-useStoredSettings = raw_input("Type 'yes' if you want to enter custom settings:")
-if(useStoredSettings=="yes" or useStoredSettings=="y"):
-  cRep = raw_input("Which repository (name):")
-  username = raw_input("Your GitHub username:")
+hRep = raw_input("Name of the repository that will contain the Commit-History:")
+cRep = raw_input("Name of the repostiory that's about to be archived:")
+username = raw_input("Your GitHub username:")
 password = getpass.getpass("Your GitHub password: ")
+
+hRepPath = hRepPath+hRep #Appending the repoName
 
 #Check if the hRep exists
 try:
@@ -36,7 +33,7 @@ except urllib2.HTTPError:
   print "INFORMATION:"
   print "GitHubHistorian was unable to detect your historic repository named: "+hRep
   print "Please login to github.com and create a new repository with that name and be sure to initalize it!"
-  print "If you already have a repo with a differnet name, you can change the repository name in the settings."
+  print "If you already have a repo with a different name, you can change the repository name in the settings."
   print ""
   sys.exit()
 
@@ -106,7 +103,7 @@ for element in commitList:
     historyFile.close()
 
   #Build a commit
-  call(["git","commit","--date",element[2],"-am","'"+element[3]+"'","--author="+element[0]+" <"+element[1]+">"])
+  call(["git","commit","--date",element[2],"-am","Archived "+cRep+": '"+element[3]+"'","--author="+element[0]+" <"+element[1]+">"])
 
 #Finally pushing everything to the remote
 print ""
