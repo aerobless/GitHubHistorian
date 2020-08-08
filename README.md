@@ -8,14 +8,14 @@ That's why I built **GitHub Historian**. It can download the entire commit-histo
 
 > Lose old code, **KEEP** your history.
 
-##How to use
+## How to use
 GitHubHistorian is a Python 2.X script aimed at UNIX operating systems. But it will likely work on Windows too as long as you install Python. GitHubHistorian does not have any special dependencies so you can just download & run it.
 
 1. Make sure to enter your own settings, such as repo-name, username into the designated area at the top of the script.
 2. Run the script with `python GitHubHistorian.py` in your favourite shell
 
 
-##MIT License (MIT)
+## MIT License (MIT)
 
 Copyright (c) 2014 Theo Winter
 
